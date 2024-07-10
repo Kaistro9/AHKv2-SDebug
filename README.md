@@ -7,9 +7,9 @@ SDebug v0.1 (240710) for AutoHotKey v2
 
 * Init(mainWinTitle, options?) - 사용전 초기화 (디버그용 새 창을 생성 및 핫키 설정)
 * Log(description, vars*) - 변수 출력
-* ToggleVisible() - 창 표시/감춤
+* ToggleVisible() - 창 표시/감춤 토글
 * Show() - 창 표시
-* Hide() - 창 감충
+* Hide() - 창 감춤
 
 ## Property
 
