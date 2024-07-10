@@ -3,6 +3,8 @@ SDebug v0.1 (240710) for AutoHotKey v2
 
 변수 내용을 보기 쉬운 문자열로 표시
 
+핫키(HotKey)인 `(BackTick) 키를 눌러 디버그 창 표시/감춤
+
 ## Method
 
 * Init(mainWinTitle, options?) - 사용전 초기화 (디버그용 새 창을 생성 및 핫키 설정)
