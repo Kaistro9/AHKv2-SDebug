@@ -116,8 +116,8 @@ class SDebug
 		, "height", 600
 		, "padding", 5
 		, "font", "gulimche"
-		, "font_size", "11"
-		, "font_weight", "400"
+		, "font_size", "11"	; 11pt
+		, "font_weight", "400"	; 400 = normal, 700 = bold
 		, "max_lines", 150
 	)
 	
