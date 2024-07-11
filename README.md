@@ -92,3 +92,19 @@ SDEbug.Log("object", o)
             3
         ]
     }
+
+### 5) Gui Hotkey 컨트롤 출력시
+
+```AutoHotkey
+GUI_Main.Add("Hotkey", "vHotkey1 x60 y80 w100", "").OnEvent("Change", GUI_handlerDebug)
+
+GUI_handlerDebug(guiobj, evt)
+{
+	SDebug.Log("handlerDebug", guiobj)
+}
+```
+
+결과:
+
+    ◆ [01:55:20] handlerDebug
+    (1) [Gui.Hotkey] Hotkey1.Value = ^1 (ctrl+1)

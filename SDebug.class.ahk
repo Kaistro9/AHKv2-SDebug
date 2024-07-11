@@ -72,6 +72,24 @@
  *           3
  *       ]
  *   }
+ *
+ * ; GUI 컨트롤 중 Hotkey 객체 사용시 ctrl(^), shift(+), alt(!)를 보기 쉽게 변환 표시
+ * GUI_Main.Add("Hotkey", "vHotkey1 x60 y80 w100", "").OnEvent("Change", GUI_handlerDebug)
+ * GUI_handlerDebug(guiobj, evt)
+ * {
+ *     SDebug.Log("handlerDebug", guiobj)
+ * }
+ * > ◆ handlerDebug
+ *   (1) [Gui.Hotkey] Hotkey1.Value = ^1 (ctrl+1)
+ *
+ *
+ * @ Update
+ * [v0.1.1] 24-07-12
+ * - Gui Hotkey 컨트롤에서 특수키 변환 표시 지원 (^+! -> ctrl,shift,alt로 표시)
+ * - 폰트, 크기 설정 추가
+ *
+ * [v0.1] 24-07-10
+ * - 초기 버전
  */
 class SDebug
 {
@@ -97,6 +115,9 @@ class SDebug
 		, "width", 500
 		, "height", 600
 		, "padding", 5
+		, "font", "gulimche"
+		, "font_size", "11"
+		, "font_weight", "400"
 		, "max_lines", 150
 	)
 	
@@ -121,6 +142,7 @@ class SDebug
 			SDebug._mainWinTitle := mainWinTitle
 			SDebug._winTitle := mainWinTitle "-Debug Window"
 			SDebug.gui := GUI("+Owner", SDebug._winTitle)
+			SDebug.gui.SetFont("s" SDebug._options["font_size"] " w" SDebug._options["font_weight"], SDebug._options["font"])
 			
 			w := SDebug._options["width"]
 			h := SDebug._options["height"]
@@ -190,20 +212,7 @@ class SDebug
 	}
 	
 	static _stringfy(obj, depth := 0) {
-		if (obj is Number) {
-			temp := Format("<{1}> {2}", Type(obj), String(obj))
-		}
-		
-		else if (obj is String) {
-			; YYYYMMDDHH24MISS 형식의 문자열인 경우
-			if (isTime(obj)) {
-				temp := Format('<String:Time ({1})> "{2}"', StrLen(obj), obj)
-			} else {
-				temp := Format('<String ({1})> "{2}"', StrLen(obj), obj)
-			}
-		}
-		
-		else if (isObject(obj)) {
+		if (isObject(obj)) {
 			temp := []
 			, t1 := SDebug.Replicate(SDebug._options["tab"], depth)
 			, t2 := t1 . SDebug._options["tab"]
@@ -247,12 +256,28 @@ class SDebug
 				temp := Format("<Array ({1})> = [`n{2}`n{3}]",
 								obj.Length, RTrim(SDebug.ArrayJoin(&temp, ",`n")), t1)
 			}
-		
+			
+			; Gui Control : Hotkey
+			else if (obj.__Class = "Gui.Hotkey") {
+				name := obj.Name ? obj.Name : "-"
+				keys := []
+				
+				if (InStr(obj.Value, "+", false, 1) > 0)
+					keys.push("shift")
+				if (InStr(obj.Value, "^", false, 1) > 0)
+					keys.push("ctrl")
+				if (InStr(obj.Value, "!", false, 1) > 0)
+					keys.push("alt")
+				keys.push(RegExReplace(obj.Value, "[\+\!\^]+", ""))
+				
+				temp := Format("[{1}] {2}.Value = {3} ({4})", obj.__Class, name, obj.Value, SDebug.ArrayJoin(&keys, "+"))
+				
+			}
+			
 			; Object
 			else {
-				count := 0
-				
 				if (HasMethod(obj, "OwnProps")) {
+					count := 0
 					for key, val in obj.OwnProps() {
 						temp.push(
 							Format(t2 "{1} : {2}",
@@ -266,6 +291,19 @@ class SDebug
 				} else {
 					temp := "[Object]"
 				}
+			}
+		}
+		
+		else if (obj is Number) {
+			temp := Format("<{1}> {2}", Type(obj), String(obj))
+		}
+		
+		else if (obj is String) {
+			; YYYYMMDDHH24MISS 형식의 문자열인 경우
+			if (isTime(obj)) {
+				temp := Format('<String:Time ({1})> "{2}"', StrLen(obj), obj)
+			} else {
+				temp := Format('<String ({1})> "{2}"', StrLen(obj), obj)
 			}
 		}
 		

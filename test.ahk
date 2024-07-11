@@ -8,10 +8,17 @@
 G_DOMAIN_NAME := "SDebug Test"
 
 GUI_Main := Gui("", G_DOMAIN_NAME)
-GUI_Main.Add("Button", "vBtnReload default x200 y10 w60 h24", "Reload").OnEvent("Click", GUI_handlerReload)
+vBtnReload1 := GUI_Main.Add("Button", "vBtnReload default x200 y10 w60 h24", "Reload").OnEvent("Click", GUI_handlerReload)
 
-GUI_Main.Add("Text", "x10 y12 w170", "SDebug class : " SDebug.Version)
+vTxt1 := GUI_Main.Add("Text", "x10 y12 w170", "SDebug class : " SDebug.Version)
 GUI_Main.Add("Text", "x10 y42 w170", "디버그 창 단축키 : ``")
+
+GUI_Main.Add("Text", "x10 y66 w320 h2 0x10", "")
+
+GUI_Main.Add("Text", "x10 y84 w60", "핫키:")
+GUI_Main.Add("Hotkey", "vHotkey1 x60 y80 w100", "").OnEvent("Change", GUI_handlerDebug)
+
+
 
 
 Initialize()
@@ -20,7 +27,7 @@ return
 
 Initialize()
 {
-	GUI_Main.Show("w270 h100")
+	GUI_Main.Show()
 	
 	; SDebug 초기화
 	SDebug.Init(G_DOMAIN_NAME,
@@ -35,6 +42,9 @@ Initialize()
 			, width : 500
 			, height : 600
 			, padding : 5
+			, font : "gulimche"
+			, font_size : "11"
+			, font_weight : "400"
 			, max_lines : 150
 		}
 	)
@@ -49,6 +59,11 @@ Initialize()
 	; 객체 및 Map, Array 복합적인 변수 출력
 	o := {map:Map("a",65, "b",66, "c",67), cnt:2, str:"alphabet", time:FormatTime(, "yyyyMMddHHmmss"), arr:[1, 2, 3]}
 	SDEbug.Log("object", o)
+}
+
+GUI_handlerDebug(guiobj, evt)
+{
+	SDebug.Log("handlerDebug", guiobj)
 }
 
 GUI_handlerReload(guiobj, eventInfo)
